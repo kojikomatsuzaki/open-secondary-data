@@ -1,4 +1,14 @@
-name: Test MEXT School Codes Pipeline
+name: Update MEXT School Codes
+
+
+# ==========================================
+# Permissions
+# 権限
+# ==========================================
+
+permissions:
+  contents: write
+  pull-requests: write
 
 
 # ==========================================
@@ -16,8 +26,8 @@ on:
 # ==========================================
 
 jobs:
-  test-pipeline:
-    name: Check, normalize, validate, and compare
+  update-dataset:
+    name: Check, normalize, validate, compare, and create PR
     runs-on: ubuntu-latest
 
     timeout-minutes: 30
@@ -29,7 +39,7 @@ jobs:
       # ------------------------------------------
 
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       # ------------------------------------------
       # Python
@@ -37,7 +47,7 @@ jobs:
       # ------------------------------------------
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: "3.13"
 
@@ -104,7 +114,7 @@ jobs:
           python school-codes-jp/mext-school-codes/scripts/compare.py
 
       # ------------------------------------------
-      # Differences
+      # Show Git differences
       # Git差分確認
       # ------------------------------------------
 
@@ -115,6 +125,30 @@ jobs:
           git diff --stat
 
       # ------------------------------------------
+      # Create Pull Request
+      # Pull Request作成
+      # ------------------------------------------
+
+      - name: Create update pull request
+        if: steps.fetch.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v8
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+          branch: automation/mext-school-codes-update
+          delete-branch: true
+
+          commit-message: "Update MEXT school codes dataset"
+
+          title: "Update MEXT school codes dataset"
+
+          body-path: school-codes-jp/mext-school-codes/reports/latest-changes.md
+
+          labels: |
+            automated
+            data-update
+
+      # ------------------------------------------
       # No change
       # 更新なし
       # ------------------------------------------
@@ -123,5 +157,5 @@ jobs:
         if: steps.fetch.outputs.changed != 'true'
         run: |
           echo "MEXT source files are already up to date."
-          echo "Normalization, validation, and comparison were skipped."
+          echo "Normalization, validation, comparison, and PR creation were skipped."
           
