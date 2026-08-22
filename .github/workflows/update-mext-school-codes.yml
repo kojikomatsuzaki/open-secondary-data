@@ -1,0 +1,89 @@
+name: Test MEXT School Codes Pipeline
+
+# ==========================================
+# Trigger
+# 実行条件
+# ==========================================
+
+on:
+  workflow_dispatch:
+
+
+# ==========================================
+# Jobs
+# ジョブ
+# ==========================================
+
+jobs:
+  test-pipeline:
+    name: Fetch, normalize, and validate
+    runs-on: ubuntu-latest
+
+    timeout-minutes: 30
+
+    steps:
+      # ------------------------------------------
+      # Checkout
+      # リポジトリ取得
+      # ------------------------------------------
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # ------------------------------------------
+      # Python
+      # Python実行環境
+      # ------------------------------------------
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      # ------------------------------------------
+      # Dependencies
+      # 依存ライブラリ
+      # ------------------------------------------
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r school-codes-jp/mext-school-codes/scripts/requirements.txt
+
+      # ------------------------------------------
+      # Fetch
+      # 一次情報源取得
+      # ------------------------------------------
+
+      - name: Fetch MEXT source files
+        run: |
+          python school-codes-jp/mext-school-codes/scripts/fetch_sources.py
+
+      # ------------------------------------------
+      # Normalize
+      # 二次データ生成
+      # ------------------------------------------
+
+      - name: Normalize school codes
+        run: |
+          python school-codes-jp/mext-school-codes/scripts/normalize.py
+
+      # ------------------------------------------
+      # Validate
+      # 検証
+      # ------------------------------------------
+
+      - name: Validate generated data
+        run: |
+          python school-codes-jp/mext-school-codes/scripts/validate.py
+
+      # ------------------------------------------
+      # Differences
+      # 差分確認
+      # ------------------------------------------
+
+      - name: Show repository changes
+        run: |
+          git status --short
+          git diff --stat
+          
