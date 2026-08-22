@@ -17,6 +17,11 @@ permissions:
 # ==========================================
 
 on:
+  # ------------------------------------------
+  # Manual execution
+  # 手動実行
+  # ------------------------------------------
+
   workflow_dispatch:
     inputs:
       force_update_test:
@@ -24,6 +29,17 @@ on:
         required: false
         type: boolean
         default: false
+
+  # ------------------------------------------
+  # Scheduled execution
+  # 定期実行
+  #
+  # GitHub Actions cron uses UTC.
+  # Tuesday 18:00 UTC = Wednesday 03:00 JST.
+  # ------------------------------------------
+
+  schedule:
+    - cron: "0 18 * * 2"
 
 
 # ==========================================
@@ -141,6 +157,9 @@ jobs:
       # ------------------------------------------
       # PR test marker
       # PR作成テスト用マーカー
+      #
+      # 手動実行でforce_update_test=trueの場合のみ、
+      # 実データを変更せずPR作成経路を検証する。
       # ------------------------------------------
 
       - name: Add PR test marker
