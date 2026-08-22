@@ -18,6 +18,12 @@ permissions:
 
 on:
   workflow_dispatch:
+    inputs:
+      force_update_test:
+        description: "Force update path for PR creation test"
+        required: false
+        type: boolean
+        default: false
 
 
 # ==========================================
@@ -72,13 +78,32 @@ jobs:
           python school-codes-jp/mext-school-codes/scripts/fetch_sources.py
 
       # ------------------------------------------
+      # Decide whether update path should run
+      # 更新処理実行判定
+      # ------------------------------------------
+
+      - name: Decide update path
+        id: update
+        shell: bash
+        run: |
+          if [ "${{ github.event.inputs.force_update_test }}" = "true" ]; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            echo "test_mode=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=${{ steps.fetch.outputs.changed }}" >> "$GITHUB_OUTPUT"
+            echo "test_mode=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      # ------------------------------------------
       # Show change detection result
       # 更新判定結果表示
       # ------------------------------------------
 
       - name: Show source update status
         run: |
-          echo "changed=${{ steps.fetch.outputs.changed }}"
+          echo "source_changed=${{ steps.fetch.outputs.changed }}"
+          echo "effective_changed=${{ steps.update.outputs.changed }}"
+          echo "test_mode=${{ steps.update.outputs.test_mode }}"
           echo "added_count=${{ steps.fetch.outputs.added_count }}"
           echo "removed_count=${{ steps.fetch.outputs.removed_count }}"
           echo "modified_count=${{ steps.fetch.outputs.modified_count }}"
@@ -89,7 +114,7 @@ jobs:
       # ------------------------------------------
 
       - name: Normalize school codes
-        if: steps.fetch.outputs.changed == 'true'
+        if: steps.update.outputs.changed == 'true'
         run: |
           python school-codes-jp/mext-school-codes/scripts/normalize.py
 
@@ -99,7 +124,7 @@ jobs:
       # ------------------------------------------
 
       - name: Validate generated data
-        if: steps.fetch.outputs.changed == 'true'
+        if: steps.update.outputs.changed == 'true'
         run: |
           python school-codes-jp/mext-school-codes/scripts/validate.py
 
@@ -109,9 +134,25 @@ jobs:
       # ------------------------------------------
 
       - name: Compare with previous version
-        if: steps.fetch.outputs.changed == 'true'
+        if: steps.update.outputs.changed == 'true'
         run: |
           python school-codes-jp/mext-school-codes/scripts/compare.py
+
+      # ------------------------------------------
+      # PR test marker
+      # PR作成テスト用マーカー
+      # ------------------------------------------
+
+      - name: Add PR test marker
+        if: steps.update.outputs.test_mode == 'true'
+        shell: bash
+        run: |
+          {
+            echo ""
+            echo "---"
+            echo ""
+            echo "> PR creation test executed by GitHub Actions."
+          } >> school-codes-jp/mext-school-codes/reports/latest-changes.md
 
       # ------------------------------------------
       # Show Git differences
@@ -119,7 +160,7 @@ jobs:
       # ------------------------------------------
 
       - name: Show repository changes
-        if: steps.fetch.outputs.changed == 'true'
+        if: steps.update.outputs.changed == 'true'
         run: |
           git status --short
           git diff --stat
@@ -130,7 +171,7 @@ jobs:
       # ------------------------------------------
 
       - name: Create update pull request
-        if: steps.fetch.outputs.changed == 'true'
+        if: steps.update.outputs.changed == 'true'
         uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -154,7 +195,7 @@ jobs:
       # ------------------------------------------
 
       - name: No source changes detected
-        if: steps.fetch.outputs.changed != 'true'
+        if: steps.update.outputs.changed != 'true'
         run: |
           echo "MEXT source files are already up to date."
           echo "Normalization, validation, comparison, and PR creation were skipped."
