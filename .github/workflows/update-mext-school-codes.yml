@@ -1,5 +1,6 @@
 name: Test MEXT School Codes Pipeline
 
+
 # ==========================================
 # Trigger
 # 実行条件
@@ -16,7 +17,7 @@ on:
 
 jobs:
   test-pipeline:
-    name: Fetch, normalize, and validate
+    name: Check, normalize, and validate
     runs-on: ubuntu-latest
 
     timeout-minutes: 30
@@ -51,13 +52,26 @@ jobs:
           python -m pip install -r school-codes-jp/mext-school-codes/scripts/requirements.txt
 
       # ------------------------------------------
-      # Fetch
-      # 一次情報源取得
+      # Fetch and change detection
+      # 一次情報源取得・更新判定
       # ------------------------------------------
 
-      - name: Fetch MEXT source files
+      - name: Check MEXT source files
+        id: fetch
         run: |
           python school-codes-jp/mext-school-codes/scripts/fetch_sources.py
+
+      # ------------------------------------------
+      # Show change detection result
+      # 更新判定結果表示
+      # ------------------------------------------
+
+      - name: Show source update status
+        run: |
+          echo "changed=${{ steps.fetch.outputs.changed }}"
+          echo "added_count=${{ steps.fetch.outputs.added_count }}"
+          echo "removed_count=${{ steps.fetch.outputs.removed_count }}"
+          echo "modified_count=${{ steps.fetch.outputs.modified_count }}"
 
       # ------------------------------------------
       # Normalize
@@ -65,6 +79,7 @@ jobs:
       # ------------------------------------------
 
       - name: Normalize school codes
+        if: steps.fetch.outputs.changed == 'true'
         run: |
           python school-codes-jp/mext-school-codes/scripts/normalize.py
 
@@ -74,6 +89,7 @@ jobs:
       # ------------------------------------------
 
       - name: Validate generated data
+        if: steps.fetch.outputs.changed == 'true'
         run: |
           python school-codes-jp/mext-school-codes/scripts/validate.py
 
@@ -83,7 +99,19 @@ jobs:
       # ------------------------------------------
 
       - name: Show repository changes
+        if: steps.fetch.outputs.changed == 'true'
         run: |
           git status --short
           git diff --stat
+
+      # ------------------------------------------
+      # No change
+      # 更新なし
+      # ------------------------------------------
+
+      - name: No source changes detected
+        if: steps.fetch.outputs.changed != 'true'
+        run: |
+          echo "MEXT source files are already up to date."
+          echo "Normalization and validation were skipped."
           
