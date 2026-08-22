@@ -17,7 +17,7 @@ on:
 
 jobs:
   test-pipeline:
-    name: Check, normalize, and validate
+    name: Check, normalize, validate, and compare
     runs-on: ubuntu-latest
 
     timeout-minutes: 30
@@ -94,8 +94,18 @@ jobs:
           python school-codes-jp/mext-school-codes/scripts/validate.py
 
       # ------------------------------------------
+      # Compare
+      # 前回版との差分比較
+      # ------------------------------------------
+
+      - name: Compare with previous version
+        if: steps.fetch.outputs.changed == 'true'
+        run: |
+          python school-codes-jp/mext-school-codes/scripts/compare.py
+
+      # ------------------------------------------
       # Differences
-      # 差分確認
+      # Git差分確認
       # ------------------------------------------
 
       - name: Show repository changes
@@ -113,5 +123,5 @@ jobs:
         if: steps.fetch.outputs.changed != 'true'
         run: |
           echo "MEXT source files are already up to date."
-          echo "Normalization and validation were skipped."
+          echo "Normalization, validation, and comparison were skipped."
           
