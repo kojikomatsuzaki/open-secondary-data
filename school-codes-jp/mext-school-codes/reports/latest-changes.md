@@ -24,3 +24,7 @@ GitのHEADに保存された前回版と、現在生成された `schools.csv` �
 
 なし
 
+
+---
+
+> PR creation test executed by GitHub Actions.
