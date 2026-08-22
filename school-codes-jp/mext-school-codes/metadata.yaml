@@ -1,0 +1,784 @@
+schema_version: "1.0"
+
+
+# ==========================================
+# Dataset
+# データセット
+# ==========================================
+
+dataset:
+  id: "mext-school-codes"
+  title:
+    ja: "文部科学省 学校コード"
+    en: "MEXT School Codes"
+  description:
+    ja: >
+      文部科学省が公開する「学校コード」を一次情報源として、
+      再利用しやすい形式へ整理・構造化した二次データセット。
+    en: >
+      A secondary dataset derived from the official School Codes
+      published by Japan's Ministry of Education, Culture, Sports,
+      Science and Technology (MEXT), organized and structured for reuse.
+  domain: "school-codes-jp"
+  status: "active"
+
+
+# ==========================================
+# Field Definitions
+# フィールド定義
+# ==========================================
+
+field_definitions:
+  source_label:
+    ja: >
+      一次情報源に記載されている区分値の表記を、加工せずに保持したもの。
+      一次情報源との照合および来歴の確認に使用する。
+    en: >
+      The classification label as represented in the primary source,
+      preserved without normalization for source comparison and provenance.
+
+  source_labels:
+    ja: >
+      同一の正規化された区分値に対して、一次情報源に複数の表記が存在する場合に、
+      それらの表記を保持するためのリスト。
+    en: >
+      A list of source labels used when multiple representations in the
+      primary source correspond to the same normalized classification value.
+
+  normalized_name:
+    ja: >
+      一次情報源の表記をもとに、二次データとして利用しやすいよう正規化した名称。
+      一次情報源の表記そのものは source_label または source_labels に保持する。
+    en: >
+      A normalized name provided for convenient reuse as secondary data.
+      The original representation from the primary source is preserved
+      separately in source_label or source_labels.
+
+
+# ==========================================
+# Identifier Format
+# 識別子形式
+# ==========================================
+
+identifier_format:
+  school_code:
+    pattern: "^[A-Z][0-9]{12}$"
+    description:
+      ja: >
+        学校コードは、学校種を示す英字1文字と数字12桁から構成される。
+    en: >
+        A school code consists of one uppercase alphabetic character
+        followed by twelve digits.
+
+
+# ==========================================
+# Coverage and Controlled Vocabularies
+# 対象範囲・統制語彙
+# ==========================================
+
+coverage:
+  country:
+    code: "JP"
+    scheme: "ISO 3166-1 alpha-2"
+    name:
+      ja: "日本"
+      en: "Japan"
+
+  geographic_scope:
+    type: "nationwide"
+    prefecture_count: 47
+
+  prefectures:
+    - code: "01"
+      source_labels:
+        - "01(北海道)"
+      normalized_name:
+        ja: "北海道"
+        en: "Hokkaido"
+
+    - code: "02"
+      source_labels:
+        - "02(青森)"
+      normalized_name:
+        ja: "青森県"
+        en: "Aomori Prefecture"
+
+    - code: "03"
+      source_labels:
+        - "03(岩手)"
+      normalized_name:
+        ja: "岩手県"
+        en: "Iwate Prefecture"
+
+    - code: "04"
+      source_labels:
+        - "04(宮城)"
+      normalized_name:
+        ja: "宮城県"
+        en: "Miyagi Prefecture"
+
+    - code: "05"
+      source_labels:
+        - "05(秋田)"
+      normalized_name:
+        ja: "秋田県"
+        en: "Akita Prefecture"
+
+    - code: "06"
+      source_labels:
+        - "06(山形)"
+      normalized_name:
+        ja: "山形県"
+        en: "Yamagata Prefecture"
+
+    - code: "07"
+      source_labels:
+        - "07(福島)"
+      normalized_name:
+        ja: "福島県"
+        en: "Fukushima Prefecture"
+
+    - code: "08"
+      source_labels:
+        - "08(茨城)"
+      normalized_name:
+        ja: "茨城県"
+        en: "Ibaraki Prefecture"
+
+    - code: "09"
+      source_labels:
+        - "09(栃木)"
+      normalized_name:
+        ja: "栃木県"
+        en: "Tochigi Prefecture"
+
+    - code: "10"
+      source_labels:
+        - "10(群馬)"
+      normalized_name:
+        ja: "群馬県"
+        en: "Gunma Prefecture"
+
+    - code: "11"
+      source_labels:
+        - "11(埼玉)"
+      normalized_name:
+        ja: "埼玉県"
+        en: "Saitama Prefecture"
+
+    - code: "12"
+      source_labels:
+        - "12(千葉)"
+      normalized_name:
+        ja: "千葉県"
+        en: "Chiba Prefecture"
+
+    - code: "13"
+      source_labels:
+        - "13(東京)"
+      normalized_name:
+        ja: "東京都"
+        en: "Tokyo Metropolis"
+
+    - code: "14"
+      source_labels:
+        - "14(神奈川)"
+      normalized_name:
+        ja: "神奈川県"
+        en: "Kanagawa Prefecture"
+
+    - code: "15"
+      source_labels:
+        - "15(新潟)"
+      normalized_name:
+        ja: "新潟県"
+        en: "Niigata Prefecture"
+
+    - code: "16"
+      source_labels:
+        - "16(富山)"
+      normalized_name:
+        ja: "富山県"
+        en: "Toyama Prefecture"
+
+    - code: "17"
+      source_labels:
+        - "17(石川)"
+      normalized_name:
+        ja: "石川県"
+        en: "Ishikawa Prefecture"
+
+    - code: "18"
+      source_labels:
+        - "18(福井)"
+      normalized_name:
+        ja: "福井県"
+        en: "Fukui Prefecture"
+
+    - code: "19"
+      source_labels:
+        - "19(山梨)"
+      normalized_name:
+        ja: "山梨県"
+        en: "Yamanashi Prefecture"
+
+    - code: "20"
+      source_labels:
+        - "20(長野)"
+      normalized_name:
+        ja: "長野県"
+        en: "Nagano Prefecture"
+
+    - code: "21"
+      source_labels:
+        - "21(岐阜)"
+      normalized_name:
+        ja: "岐阜県"
+        en: "Gifu Prefecture"
+
+    - code: "22"
+      source_labels:
+        - "22(静岡)"
+      normalized_name:
+        ja: "静岡県"
+        en: "Shizuoka Prefecture"
+
+    - code: "23"
+      source_labels:
+        - "23(愛知)"
+      normalized_name:
+        ja: "愛知県"
+        en: "Aichi Prefecture"
+
+    - code: "24"
+      source_labels:
+        - "24(三重)"
+      normalized_name:
+        ja: "三重県"
+        en: "Mie Prefecture"
+
+    - code: "25"
+      source_labels:
+        - "25(滋賀)"
+      normalized_name:
+        ja: "滋賀県"
+        en: "Shiga Prefecture"
+
+    - code: "26"
+      source_labels:
+        - "26(京都)"
+      normalized_name:
+        ja: "京都府"
+        en: "Kyoto Prefecture"
+
+    - code: "27"
+      source_labels:
+        - "27(大阪)"
+      normalized_name:
+        ja: "大阪府"
+        en: "Osaka Prefecture"
+
+    - code: "28"
+      source_labels:
+        - "28(兵庫)"
+      normalized_name:
+        ja: "兵庫県"
+        en: "Hyogo Prefecture"
+
+    - code: "29"
+      source_labels:
+        - "29(奈良)"
+      normalized_name:
+        ja: "奈良県"
+        en: "Nara Prefecture"
+
+    - code: "30"
+      source_labels:
+        - "30(和歌山)"
+      normalized_name:
+        ja: "和歌山県"
+        en: "Wakayama Prefecture"
+
+    - code: "31"
+      source_labels:
+        - "31(鳥取)"
+      normalized_name:
+        ja: "鳥取県"
+        en: "Tottori Prefecture"
+
+    - code: "32"
+      source_labels:
+        - "32(島根)"
+      normalized_name:
+        ja: "島根県"
+        en: "Shimane Prefecture"
+
+    - code: "33"
+      source_labels:
+        - "33(岡山)"
+      normalized_name:
+        ja: "岡山県"
+        en: "Okayama Prefecture"
+
+    - code: "34"
+      source_labels:
+        - "34(広島)"
+      normalized_name:
+        ja: "広島県"
+        en: "Hiroshima Prefecture"
+
+    - code: "35"
+      source_labels:
+        - "35(山口)"
+      normalized_name:
+        ja: "山口県"
+        en: "Yamaguchi Prefecture"
+
+    - code: "36"
+      source_labels:
+        - "36(徳島)"
+      normalized_name:
+        ja: "徳島県"
+        en: "Tokushima Prefecture"
+
+    - code: "37"
+      source_labels:
+        - "37(香川)"
+      normalized_name:
+        ja: "香川県"
+        en: "Kagawa Prefecture"
+
+    - code: "38"
+      source_labels:
+        - "38(愛媛)"
+      normalized_name:
+        ja: "愛媛県"
+        en: "Ehime Prefecture"
+
+    - code: "39"
+      source_labels:
+        - "39(高知)"
+      normalized_name:
+        ja: "高知県"
+        en: "Kochi Prefecture"
+
+    - code: "40"
+      source_labels:
+        - "40(福岡)"
+      normalized_name:
+        ja: "福岡県"
+        en: "Fukuoka Prefecture"
+
+    - code: "41"
+      source_labels:
+        - "41(佐賀)"
+      normalized_name:
+        ja: "佐賀県"
+        en: "Saga Prefecture"
+
+    - code: "42"
+      source_labels:
+        - "42(長崎)"
+      normalized_name:
+        ja: "長崎県"
+        en: "Nagasaki Prefecture"
+
+    - code: "43"
+      source_labels:
+        - "43(熊本)"
+      normalized_name:
+        ja: "熊本県"
+        en: "Kumamoto Prefecture"
+
+    - code: "44"
+      source_labels:
+        - "44(大分)"
+      normalized_name:
+        ja: "大分県"
+        en: "Oita Prefecture"
+
+    - code: "45"
+      source_labels:
+        - "45(宮崎)"
+      normalized_name:
+        ja: "宮崎県"
+        en: "Miyazaki Prefecture"
+
+    - code: "46"
+      source_labels:
+        - "46(鹿児島)"
+      normalized_name:
+        ja: "鹿児島県"
+        en: "Kagoshima Prefecture"
+
+    - code: "47"
+      source_labels:
+        - "47(沖縄)"
+      normalized_name:
+        ja: "沖縄県"
+        en: "Okinawa Prefecture"
+
+  institution_types:
+    - code: "A1"
+      source_labels:
+        - "A1(幼稚園)"
+      normalized_name:
+        ja: "幼稚園"
+        en: "Kindergarten"
+
+    - code: "A2"
+      source_labels:
+        - "A2(こども)"
+      normalized_name:
+        ja: "幼保連携型認定こども園"
+        en: "Integrated Center for Early Childhood Education and Care"
+
+    - code: "B1"
+      source_labels:
+        - "B1(小学校)"
+      normalized_name:
+        ja: "小学校"
+        en: "Elementary School"
+
+    - code: "C1"
+      source_labels:
+        - "C1(中学校)"
+      normalized_name:
+        ja: "中学校"
+        en: "Junior High School"
+
+    - code: "C2"
+      source_labels:
+        - "C2(義務)"
+      normalized_name:
+        ja: "義務教育学校"
+        en: "Compulsory Education School"
+
+    - code: "D1"
+      source_labels:
+        - "D1(高校)"
+      normalized_name:
+        ja: "高等学校"
+        en: "High School"
+
+    - code: "D2"
+      source_labels:
+        - "D2(中等)"
+      normalized_name:
+        ja: "中等教育学校"
+        en: "Secondary Education School"
+
+    - code: "E1"
+      source_labels:
+        - "E1(特支盲)"
+        - "E1(特支聾)"
+        - "E1(養護)"
+      normalized_name:
+        ja: "特別支援学校"
+        en: "Special Needs Education School"
+
+    - code: "F1"
+      source_labels:
+        - "F1(大学)"
+      normalized_name:
+        ja: "大学"
+        en: "University"
+
+    - code: "F2"
+      source_labels:
+        - "F2(短大)"
+      normalized_name:
+        ja: "短期大学"
+        en: "Junior College"
+
+    - code: "G1"
+      source_labels:
+        - "G1(高専)"
+      normalized_name:
+        ja: "高等専門学校"
+        en: "College of Technology"
+
+    - code: "H1"
+      source_labels:
+        - "H1(専修)"
+      normalized_name:
+        ja: "専修学校"
+        en: "Specialized Training College"
+
+    - code: "H2"
+      source_labels:
+        - "H2(各種)"
+      normalized_name:
+        ja: "各種学校"
+        en: "Miscellaneous School"
+
+  founder_types:
+    - code: "1"
+      source_label: "1(国)"
+      normalized_name:
+        ja: "国立"
+        en: "National"
+
+    - code: "2"
+      source_label: "2(公)"
+      normalized_name:
+        ja: "公立"
+        en: "Public"
+
+    - code: "3"
+      source_label: "3(私)"
+      normalized_name:
+        ja: "私立"
+        en: "Private"
+
+  school_status:
+    - code: "1"
+      source_label: "1(本)"
+      normalized_name:
+        ja: "本校"
+        en: "Main School"
+
+    - code: "2"
+      source_label: "2(分)"
+      normalized_name:
+        ja: "分校"
+        en: "Branch School"
+
+    - code: "9"
+      source_label: "9(廃)"
+      normalized_name:
+        ja: "廃止"
+        en: "Closed"
+
+
+# ==========================================
+# Primary Source
+# 一次情報源
+# ==========================================
+
+primary_source:
+  publisher:
+    name:
+      ja: "文部科学省"
+      en: "Ministry of Education, Culture, Sports, Science and Technology"
+    abbreviation: "MEXT"
+
+  title:
+    ja: "文部科学省 学校コード"
+    en: "MEXT School Codes"
+
+  official_page: "https://www.mext.go.jp/b_menu/toukei/mext_01087.html"
+
+  language:
+    - "ja"
+
+
+# ==========================================
+# Current Release
+# 現行版
+# ==========================================
+
+current_release:
+  reference_date: "2026-05-01"
+  source_updated_at: "2026-05-20"
+  published_at: "2026-05-29"
+
+  edition:
+    ja: "暫定版"
+    en: "provisional"
+
+  source_groups:
+    - id: "general-schools-east"
+      scope:
+        ja: "幼稚園等から各種学校まで・東日本"
+        en: "General school categories, eastern Japan"
+      format: "csv"
+
+    - id: "higher-education"
+      scope:
+        ja: "大学・短期大学・高等専門学校"
+        en: "Universities, junior colleges, and colleges of technology"
+      geographic_scope: "nationwide"
+      format: "csv"
+
+    - id: "general-schools-west"
+      scope:
+        ja: "幼稚園等から各種学校まで・西日本"
+        en: "General school categories, western Japan"
+      format: "csv"
+
+
+# ==========================================
+# Source Format
+# 一次データ形式
+# ==========================================
+
+source_format:
+  file_format: "csv"
+  encoding: "cp932"
+  title_row: 1
+  header_row: 2
+  data_start_row: 3
+
+  original_columns:
+    - "学校コード"
+    - "学校種"
+    - "都道府県番号"
+    - "設置\n区分"
+    - "本分校"
+    - "学校名"
+    - "学校所在地"
+    - "郵便番号"
+    - "属性情報\n設定年月日"
+    - "属性情報\n廃止年月日"
+    - "旧学校\n調査番号"
+    - "移行後の学校コード"
+
+
+# ==========================================
+# Terms of Use
+# 利用条件
+# ==========================================
+
+terms_of_use:
+  source_terms:
+    title:
+      ja: "文部科学省ウェブサイト利用規約"
+      en: "MEXT Website Terms of Use"
+    url: "https://www.mext.go.jp/b_menu/1351168.htm"
+
+  public_data_license:
+    name:
+      ja: "公共データ利用規約（第1.0版）"
+      en: "Public Data License Version 1.0"
+
+  compatible_with:
+    - "CC BY 4.0"
+
+  notes:
+    ja: >
+      文部科学省ウェブサイト利用規約に従い、出典を明示する。
+      編集・加工等を行った場合は、その旨を明示する。
+    en: >
+      Source attribution is required in accordance with the MEXT Website
+      Terms of Use. Any editing or modification must also be disclosed.
+
+
+# ==========================================
+# Processing
+# 処理方針
+# ==========================================
+
+processing:
+  source_of_record: "MEXT published CSV files"
+
+  principles:
+    - "preserve-primary-source"
+    - "record-provenance"
+    - "separate-primary-and-secondary-data"
+    - "document-transformations"
+    - "reproducible-processing"
+    - "difference-detection"
+    - "human-review-when-needed"
+
+  normalization:
+    column_name_line_breaks: "remove"
+    split_school_type_code_and_label: true
+    split_prefecture_code_and_label: true
+    split_founder_code_and_label: true
+    split_school_status_code_and_label: true
+    preserve_source_labels: true
+
+    preserve_leading_zeros:
+      - "school_code"
+      - "prefecture_code"
+      - "postal_code"
+      - "obsolete_school_survey_number"
+      - "successor_school_code"
+
+  planned_outputs:
+    - format: "yaml"
+      role: "secondary-data-master"
+
+    - format: "json"
+      role: "machine-readable-distribution"
+
+    - format: "csv"
+      role: "tabular-distribution"
+
+
+# ==========================================
+# Update Policy
+# 更新方針
+# ==========================================
+
+update_policy:
+  source_monitoring: "planned"
+  automation: "planned"
+  automation_platform: "GitHub Actions"
+  human_review: true
+
+  regeneration_policy:
+    ja: >
+      二次データは差分更新せず、一次情報源から全件を再生成する。
+      差分は更新判定および生成結果の検証に使用する。
+    en: >
+      Secondary data is regenerated in full from the primary source
+      rather than incrementally updated. Differences are used to detect
+      source updates and to validate generated results.
+
+  vocabulary_validation:
+    source_and_metadata: "pass"
+    source_only: "error"
+    metadata_only: "warning"
+
+  workflow:
+    - "check-source-update"
+    - "retrieve-source-files"
+    - "compare-source-files"
+    - "generate-secondary-data"
+    - "validate-controlled-vocabularies"
+    - "validate-structure"
+    - "validate-cross-format-consistency"
+    - "compare-with-previous-version"
+    - "generate-difference-report"
+    - "human-review"
+    - "merge"
+
+
+# ==========================================
+# Provenance
+# 来歴
+# ==========================================
+
+provenance:
+  source_preservation: true
+  source_directory: "sources/"
+  data_directory: "data/"
+  scripts_directory: "scripts/"
+  reports_directory: "reports/"
+
+
+# ==========================================
+# Documentation
+# ドキュメント
+# ==========================================
+
+documentation:
+  readme: "README.md"
+  repository_root_readme: "../../README.md"
+
+
+# ==========================================
+# Maintenance
+# 管理
+# ==========================================
+
+maintenance:
+  project: "open-secondary-data"
+  repository: "kojikomatsuzaki/open-secondary-data"
+
+  contact_policy:
+    ja: "管理者・問い合わせ先はルートREADMEを参照"
+    en: "See the root README for maintainer and contact information."
+    
