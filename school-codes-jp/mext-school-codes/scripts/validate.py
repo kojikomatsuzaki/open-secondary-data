@@ -146,7 +146,40 @@ def find_source_files() -> list[Path]:
     return files
 
 
-def read_source_csv(path: Path) -> list[dict[str, str]]:
+def detect_source_encoding(path: Path) -> str:
+    """
+    文科省CSVの文字コードを判定する。
+
+    現在許容するのは次の2形式だけとする。
+    - UTF-8 BOM付き
+    - CP932
+
+    UTF-8はBOM付きの場合だけ明示的に認識する。
+    それ以外はCP932として厳密にdecodeし、失敗した場合は
+    未知の文字コードとして安全側に倒して処理を停止する。
+    """
+
+    raw_bytes = path.read_bytes()
+
+    if raw_bytes.startswith(b"\xef\xbb\xbf"):
+        return "utf-8-sig"
+
+    try:
+        raw_bytes.decode("cp932")
+    except UnicodeDecodeError as error:
+        raise RuntimeError(
+            "想定外のCSV文字コードを検出しました。\n"
+            f"File: {path}\n"
+            "Allowed encodings: UTF-8 with BOM, CP932"
+        ) from error
+
+    return "cp932"
+
+
+def read_source_csv(
+    path: Path,
+    encoding: str,
+) -> list[dict[str, str]]:
     """
     文科省CSVを読み込む。
 
@@ -156,7 +189,7 @@ def read_source_csv(path: Path) -> list[dict[str, str]]:
 
     with path.open(
         "r",
-        encoding="cp932",
+        encoding=encoding,
         newline="",
     ) as file:
 
@@ -183,11 +216,16 @@ def load_all_source_records(
     records: list[dict[str, str]] = []
 
     for path in source_files:
-        file_records = read_source_csv(path)
+        source_encoding = detect_source_encoding(path)
+        file_records = read_source_csv(
+            path,
+            encoding=source_encoding,
+        )
         records.extend(file_records)
 
         print(
             f"Reading source: {path.name} "
+            f"[{source_encoding}] "
             f"({len(file_records):,} records)"
         )
 
@@ -647,7 +685,6 @@ def validate_record_counts(
             f"レコード件数: "
             f"全形式一致 ({count:,} records)"
         )
-
     else:
         results.error(
             "レコード件数が一致しません: "
