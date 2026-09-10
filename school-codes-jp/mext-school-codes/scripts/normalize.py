@@ -156,6 +156,40 @@ def build_normalization_lookup(
 # Source Format
 # ==========================================
 
+def detect_source_encoding(
+    source_file: Path,
+) -> str:
+    """
+    文科省CSVの文字コードを判定する。
+
+    現在許容するのは次の2形式だけとする。
+    - UTF-8 BOM付き
+    - CP932
+
+    UTF-8はBOM付きの場合だけ明示的に認識する。
+    それ以外はCP932として厳密にdecodeし、失敗した場合は
+    未知の文字コードとして安全側に倒して処理を停止する。
+    """
+
+    raw_bytes = source_file.read_bytes()
+
+    if raw_bytes.startswith(
+        b"\xef\xbb\xbf"
+    ):
+        return "utf-8-sig"
+
+    try:
+        raw_bytes.decode("cp932")
+    except UnicodeDecodeError as error:
+        raise RuntimeError(
+            "想定外のCSV文字コードを検出しました。\n"
+            f"File: {source_file}\n"
+            "Allowed encodings: UTF-8 with BOM, CP932"
+        ) from error
+
+    return "cp932"
+
+
 def normalize_column_name(
     column_name: str,
 ) -> str:
@@ -885,12 +919,6 @@ def main() -> int:
     try:
         metadata = load_metadata()
 
-        source_encoding = (
-            metadata
-            .get("source_format", {})
-            .get("encoding", "cp932")
-        )
-
         coverage = metadata.get(
             "coverage",
             {},
@@ -949,6 +977,17 @@ def main() -> int:
             print(
                 f"Reading: "
                 f"{source_file.name}"
+            )
+
+            source_encoding = (
+                detect_source_encoding(
+                    source_file
+                )
+            )
+
+            print(
+                f"  Encoding: "
+                f"{source_encoding}"
             )
 
             source_rows = (
