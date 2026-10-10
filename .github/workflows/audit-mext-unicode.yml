@@ -6,7 +6,9 @@ on:
       - audit/unicode-school-codes
     paths:
       - ".github/workflows/audit-mext-unicode.yml"
-      - "school-codes-jp/mext-school-codes/scripts/audit_unicode.py"
+      - "school-codes-jp/mext-school-codes/scripts/**"
+      - "school-codes-jp/mext-school-codes/tests/**"
+      - "school-codes-jp/mext-school-codes/metadata/search-variants.yaml"
       - "school-codes-jp/mext-school-codes/data/schools.csv"
   workflow_dispatch:
 
@@ -23,6 +25,11 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - name: Install search test dependency
+        run: python3 -m pip install "PyYAML==6.0.3"
+      - name: Test search normalization
+        working-directory: school-codes-jp/mext-school-codes
+        run: python3 -m unittest discover -s tests -p "test_search_normalization.py" -v
       - name: Audit complete school dataset
         run: |
           python3 school-codes-jp/mext-school-codes/scripts/audit_unicode.py \
