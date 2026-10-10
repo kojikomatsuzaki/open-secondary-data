@@ -21,6 +21,9 @@ class SearchNormalizationTests(unittest.TestCase):
     def test_preserve_unrelated_symbols(self):
         self.assertEqual(normalize_search("ℐ ⁺ − ⼤"), "ℐ ⁺ − ⼤")
 
+    def test_do_not_fold_unreviewed_compatibility_ideographs(self):
+        self.assertEqual(normalize_search("神"), "神")
+
     def test_preserve_ivs_and_pua(self):
         text = "葛\U000E0100\uEF54"
         self.assertEqual(normalize_search(text), text)
