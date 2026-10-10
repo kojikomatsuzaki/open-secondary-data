@@ -77,6 +77,22 @@
 
 ---
 
+## 文字表記・Unicode・原資料忠実性の方針
+
+学校名・所在地等の文字列は、原資料への忠実性と、人間・機械・AIによる検索・識別の容易さを両立させる。
+
+1. **原資料の不変保存**：文部科学省から取得したファイルは原則としてバイト単位で保存し、取得元、取得日、版、SHA-256を記録する。取得した原資料を正規化結果で上書きしない。
+2. **原文と用途別文字列の分離**：原資料から忠実に読み取った `source_text`、確認済みの表記を用いる `display_text`、検索・照合に適した `search_text` を概念上区別する。実際のフィールド名・配置はスキーマ定義時に確定する。変換不能な文字は欠損値と混同せず、推測で補わない。
+3. **正規化の基準**：Unicodeのブロック所属だけで正誤を決めない。康熙部首・CJK部首補助の文字はUnicodeの互換分解先を候補として検証する。CJK互換漢字、異体字、私用領域（PUA）は一律に置換しない。NFKCを全文に無条件適用しない。
+4. **異体字セレクタの検査**：全件の文字列から U+FE00–U+FE0F および U+E0100–U+E01EF を検出する。漢字のIVS候補については基底文字とセレクタの組を記録し、必要に応じてIVD登録を照合する。検出だけを理由に削除しない。
+5. **記号と固有名詞**：住所の番地区切りと確認された各種ダッシュ・マイナスは、原文を保存した上で表示・検索用に U+002D を使用できる。装飾的な欧文・記号（例：ℐ、⁺）は公式表記を確認し、原文と表示名を別管理する。漢字の固有名詞は、単なる字体の類似で置換しない。
+6. **判断の記録**：学校コード・項目・原文・表示／検索用文字列・変更前後のコードポイント・判断理由・参照した公式資料URL・確認日・確認状態を、機械可読な注記として保持する。未確認の推測は事実と区別する。
+7. **更新・品質検査**：原資料の変更と変換処理の変更を区別する。学校コードの一意性、レコード数、欠損、疑わしい文字、IVS、CSV・JSON・YAML間の整合性を検査する。意味判断が必要な差分はマージ前に確認し、再現可能な検証レポートを残す。
+
+この方針はデータ処理の設計原則であり、すべてのフィールドや自動検証が実装済みであることを意味しない。
+
+---
+
 ## ディレクトリ構成
 
 ```text
@@ -224,6 +240,22 @@ The following principles are applied:
 6. Apply human review when changes require semantic judgment
 
 Detailed data structures and transformation procedures will be documented as the dataset and processing scripts are developed.
+
+---
+
+## Character Representation, Unicode, and Source Fidelity
+
+The dataset balances faithful preservation of original school names and addresses with human-readable, machine-readable, and AI-recognizable forms.
+
+1. **Immutable source files:** Preserve downloaded MEXT files byte-for-byte where possible, with source URL, retrieval date, version, and SHA-256. Never overwrite originals with normalized output.
+2. **Separate representations:** Distinguish the faithfully decoded `source_text`, verified `display_text`, and search-oriented `search_text` conceptually. Final field names and storage layout will be defined in the schema. Do not confuse undecodable characters with missing values or fill them by guesswork.
+3. **Unicode rules:** Do not judge correctness by Unicode block alone. Check Unicode compatibility decompositions for Kangxi Radicals and CJK Radicals Supplement; review CJK Compatibility Ideographs, variant forms, and Private Use Area characters individually. Do not apply NFKC indiscriminately to entire fields.
+4. **Variation selectors:** Scan all records for U+FE00–U+FE0F and U+E0100–U+E01EF. Record the base character and selector for potential ideographic variation sequences, and check IVD registration where appropriate. Do not delete selectors merely because they were detected.
+5. **Punctuation and proper names:** Where verified as address-number separators, dash/minus variants may be represented as U+002D in display/search fields while retaining the original. Verify decorative Latin letters and symbols (e.g. ℐ, ⁺) against official names. Never replace name characters solely because their glyphs look similar.
+6. **Auditable decisions:** Maintain machine-readable notes keyed by school code and field, including source and derived strings, code points, rationale, official reference URLs, review date, and verification status. Clearly label unverified hypotheses.
+7. **Update validation:** Distinguish source revisions from processing changes. Validate code uniqueness, counts, missing data, suspicious characters, variation selectors, and CSV/JSON/YAML consistency. Review semantic changes before merging and retain reproducible reports.
+
+These are design policies, not a claim that all fields and automated checks have already been implemented.
 
 ---
 
