@@ -7,8 +7,6 @@ from __future__ import annotations
 
 from functools import lru_cache
 from pathlib import Path
-import unicodedata
-
 import yaml
 
 DEFAULT_REGISTRY = Path(__file__).resolve().parents[1] / "metadata" / "search-variants.yaml"
@@ -45,7 +43,7 @@ def normalize_search(text: str, registry_path: str | Path = DEFAULT_REGISTRY) ->
     if not isinstance(text, str):
         raise TypeError("normalize_search expects str")
     aliases = load_search_aliases(str(registry_path))
-    return "".join(aliases.get(ch, ch) for ch in unicodedata.normalize("NFC", text))
+    return "".join(aliases.get(ch, ch) for ch in text)
 
 
 def matches_search(query: str, candidate: str, registry_path: str | Path = DEFAULT_REGISTRY) -> bool:
