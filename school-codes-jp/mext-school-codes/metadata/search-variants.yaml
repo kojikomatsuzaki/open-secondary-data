@@ -1,0 +1,40 @@
+# Search-only mapping registry. Do not use to rewrite source/display names.
+# status=automatic: currently implemented in scripts/search_normalization.py
+# status=candidate: documentation only; not applied to search.
+schema_version: "0.1"
+automatic:
+  - canonical: "崎"
+    variants: ["﨑"]
+    codepoints: ["U+5D0E", "U+FA11"]
+    scope: "search_only"
+    reason: "CJK compatibility ideograph"
+  - canonical: "塚"
+    variants: ["塚"]
+    codepoints: ["U+585A", "U+FA10"]
+    scope: "search_only"
+    reason: "CJK compatibility ideograph"
+  - canonical: "都"
+    variants: ["都"]
+    codepoints: ["U+90FD", "U+FA26"]
+    scope: "search_only"
+    reason: "CJK compatibility ideograph"
+candidate:
+  - variants: ["沢", "澤"]
+    kind: "shinjitai_kyujitai"
+    status: "needs_review"
+  - variants: ["竜", "龍"]
+    kind: "shinjitai_kyujitai"
+    status: "needs_review"
+  - variants: ["旧", "舊"]
+    kind: "shinjitai_kyujitai"
+    status: "needs_review"
+  - variants: ["体", "體"]
+    kind: "shinjitai_kyujitai"
+    status: "needs_review"
+  - variants: ["崎", "嵜"]
+    kind: "name_variant"
+    status: "needs_review"
+  - variants: ["ケ", "ヶ", "ガ", "カ", "が", "か", "箇", "个"]
+    kind: "contextual_place_name_spelling"
+    status: "needs_review"
+    note: "Never fold globally; attach documented aliases to individual entities."
