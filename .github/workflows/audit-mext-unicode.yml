@@ -29,7 +29,7 @@ jobs:
         run: python3 -m pip install "PyYAML==6.0.3"
       - name: Test search normalization
         working-directory: school-codes-jp/mext-school-codes
-        run: python3 -m unittest discover -s tests -p "test_search_normalization.py" -v
+        run: python3 -m unittest discover -s tests -p "test_search*.py" -v
       - name: Audit complete school dataset
         run: |
           python3 school-codes-jp/mext-school-codes/scripts/audit_unicode.py \
