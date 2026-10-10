@@ -1,0 +1,47 @@
+name: Audit MEXT school-code Unicode
+
+on:
+  push:
+    branches:
+      - audit/unicode-school-codes
+    paths:
+      - ".github/workflows/audit-mext-unicode.yml"
+      - "school-codes-jp/mext-school-codes/scripts/audit_unicode.py"
+      - "school-codes-jp/mext-school-codes/data/schools.csv"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  unicode-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out audit branch
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Audit complete school dataset
+        run: |
+          python3 school-codes-jp/mext-school-codes/scripts/audit_unicode.py \
+            school-codes-jp/mext-school-codes/data/schools.csv \
+            --output school-codes-jp/mext-school-codes/reports/unicode-audit.json
+      - name: Print summary
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          report = json.loads(Path("school-codes-jp/mext-school-codes/reports/unicode-audit.json").read_text(encoding="utf-8"))
+          print("Records:", report["records"])
+          print("Findings:", len(report["findings"]))
+          for key, count in report["counts"].items():
+              print(f"{key}: {count}")
+          PY
+      - name: Upload audit report
+        uses: actions/upload-artifact@v4
+        with:
+          name: mext-unicode-audit
+          path: school-codes-jp/mext-school-codes/reports/unicode-audit.json
+          retention-days: 30
